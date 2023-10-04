@@ -17,7 +17,8 @@ Simple spendings calculator in C++ to excercise using all datatypes,
 using namespace std;
 
 //Function Declarations
-bool doesDayTextFileExist(string filename); 
+bool doesDayTextFileExist(string filename);
+void CreateTextFile(string filename); 
 
 int main()
 {
@@ -72,7 +73,7 @@ int main()
 //</summery>
 bool doesDayTextFileExist(string filename) 
 {
-    ifstream file(filename);
+    ifstream file(filename + ".txt");
     if(file.good())
     {
         cout << "Yes\n";
@@ -81,7 +82,28 @@ bool doesDayTextFileExist(string filename)
     else
     {
         cout << "Yok\n";
+        CreateTextFile(filename);
         return false;
     }
     return false;
+}
+
+
+//<summery> Suzdava textov file s ime 
+//passnato kato argument na funkciqta s nqkakav primeren input v textoviq file
+//</summery>
+void CreateTextFile(string filename)
+{
+    ofstream outputFile(filename + ".txt");
+
+    if(outputFile.is_open())
+    {
+        
+    }
+    else
+    {
+        cerr << "Error opening the file\n";
+    }
+    outputFile << "Hello, World!" << endl;
+    outputFile << "This is a text file created using C++." << endl;
 }
