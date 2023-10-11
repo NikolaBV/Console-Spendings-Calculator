@@ -13,13 +13,30 @@ Simple spendings calculator in C++ to excercise using all datatypes,
 */
 #include <iostream>
 #include <fstream>
+#include <string>
 
 using namespace std;
 
 //Function Declarations
 bool doesDayTextFileExist(const string& directory, const string& filename);
 void CreateTextFile(const string& directory, const string& filename);
-void PrintMenu(); 
+void PrintMenu();
+
+//<summery> Reshih da izpolzvam maisv za da moje pri printirane na menuto na consolata
+//da moje da se iterira prez nego vmesto da se copy i pasteva edno i sushto
+//</summery>
+
+int lengthOfDaysOfTheWeek = 6;
+
+string daysOfTheWeek[] = {
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+};
 
 int main()
 {
@@ -54,7 +71,7 @@ void CreateTextFile(const string& directory, const string& filename)
     string fullPath = directory + "/" + filename + ".txt";
     ofstream newFile(fullPath);
     if (!newFile.is_open()) {
-        std::cerr << "Error: Failed to create the file " << fullPath << std::endl;
+        cerr << "Error: Failed to create the file " << fullPath << std::endl;
     }
 
     newFile.close();
@@ -62,20 +79,25 @@ void CreateTextFile(const string& directory, const string& filename)
 
 void PrintMenu()
 {
- int input;
+    int input;
+    int counter = 1;
+
     cout << "Welcome to spendings calculator!" << endl;
-
-    cout << "1. Monday\n"
-    "2. Tuesday\n"
-    "3. Wednesday\n"
-    "3. Thursday\n"
-    "5. Friday\n"
-    "6. Saturday\n"
-    "7. Sunday\n";
-
-    cout << "Choose a day with its number: ";
-    cin >> input;
     
+    for(int i = 0; i <= lengthOfDaysOfTheWeek; i++)
+    {
+        cout << counter << ". " << daysOfTheWeek[i];
+        counter++;
+        cout << endl;
+    }
+
+    do
+    {
+        cout << "Choose a day with its number: ";
+        cin >> input;
+    } while(input < 1 || input > 7);
+    
+
     switch(input)
     {
         case 1:
@@ -84,25 +106,31 @@ void PrintMenu()
         break;
         case 2:
         cout << "Tuesday\n";
-        doesDayTextFileExist("E:\\Programming\\C++\\Console-Spendings-Calculator\\txt","Tuesday2");
+        doesDayTextFileExist("E:\\Programming\\C++\\Console-Spendings-Calculator\\txt","Tuesday");
         break;
         case 3:
+        doesDayTextFileExist("E:\\Programming\\C++\\Console-Spendings-Calculator\\txt","Wednesday");
         cout << "Wednesday";
         break;
         case 4:
+        doesDayTextFileExist("E:\\Programming\\C++\\Console-Spendings-Calculator\\txt","Thursday");
         cout << "Thursday";
         break;
         case 5:
+        doesDayTextFileExist("E:\\Programming\\C++\\Console-Spendings-Calculator\\txt","Friday");
         cout << "Friday";
         break;
         case 6:
+        doesDayTextFileExist("E:\\Programming\\C++\\Console-Spendings-Calculator\\txt","Saturday");
         cout << "Saturday";
         break;
         case 7:
+        doesDayTextFileExist("E:\\Programming\\C++\\Console-Spendings-Calculator\\txt","Sunday");
         cout << "Sunday";
         break;
         default:
         cout << "No such day of the week!" << endl;
         break;
+
     }
 }
