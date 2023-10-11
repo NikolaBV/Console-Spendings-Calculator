@@ -17,12 +17,52 @@ Simple spendings calculator in C++ to excercise using all datatypes,
 using namespace std;
 
 //Function Declarations
-bool doesDayTextFileExist(string filename);
-void CreateTextFile(string filename); 
+bool doesDayTextFileExist(const string& directory, const string& filename);
+void CreateTextFile(const string& directory, const string& filename);
+void PrintMenu(); 
 
 int main()
 {
-    int input;
+   PrintMenu();
+}
+
+//<summery> Proverqva dali sushtestvuva s fail s ime koeto sme dali
+//Kato argument i ako ne go suzdava
+//</summery>
+bool doesDayTextFileExist(const string& directory, const string& filename) {
+    string fullPath = directory + "/" + filename + ".txt";
+    ifstream file(fullPath);
+
+    if (file.good()) {
+        
+        file.close();
+        return true;
+    }
+    else
+    {
+        CreateTextFile(directory, filename);
+        return false;
+    }
+}
+
+
+//<summery> Suzdava textov file s ime 
+//passnato kato argument na funkciqta s nqkakav primeren input v textoviq file
+//</summery>
+void CreateTextFile(const string& directory, const string& filename)
+{
+    string fullPath = directory + "/" + filename + ".txt";
+    ofstream newFile(fullPath);
+    if (!newFile.is_open()) {
+        std::cerr << "Error: Failed to create the file " << fullPath << std::endl;
+    }
+
+    newFile.close();
+}
+
+void PrintMenu()
+{
+ int input;
     cout << "Welcome to spendings calculator!" << endl;
 
     cout << "1. Monday\n"
@@ -39,11 +79,12 @@ int main()
     switch(input)
     {
         case 1:
-        cout << "Monday";
-        doesDayTextFileExist("Monday");
+        cout << "Monday\n";
+        doesDayTextFileExist("E:\\Programming\\C++\\Console-Spendings-Calculator\\txt","Monday");
         break;
         case 2:
-        cout << "Tuesday";
+        cout << "Tuesday\n";
+        doesDayTextFileExist("E:\\Programming\\C++\\Console-Spendings-Calculator\\txt","Tuesday2");
         break;
         case 3:
         cout << "Wednesday";
@@ -62,48 +103,6 @@ int main()
         break;
         default:
         cout << "No such day of the week!" << endl;
-        return 1;
         break;
     }
-
-}
-
-//<summery> Proverqva dali sushtestvuva s fail s ime koeto sme dali
-//Kato argument i ako ne go suzdava
-//</summery>
-bool doesDayTextFileExist(string filename) 
-{
-    ifstream file(filename + ".txt");
-    if(file.good())
-    {
-        cout << "Yes\n";
-        return true;
-    }
-    else
-    {
-        cout << "Yok\n";
-        CreateTextFile(filename);
-        return false;
-    }
-    return false;
-}
-
-
-//<summery> Suzdava textov file s ime 
-//passnato kato argument na funkciqta s nqkakav primeren input v textoviq file
-//</summery>
-void CreateTextFile(string filename)
-{
-    ofstream outputFile(filename + ".txt");
-
-    if(outputFile.is_open())
-    {
-        
-    }
-    else
-    {
-        cerr << "Error opening the file\n";
-    }
-    outputFile << "Hello, World!" << endl;
-    outputFile << "This is a text file created using C++." << endl;
 }
