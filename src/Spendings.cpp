@@ -21,6 +21,7 @@ using namespace std;
 bool doesDayTextFileExist(const string& directory, const string& filename);
 void CreateTextFile(const string& directory, const string& filename);
 void PrintMenu();
+void GetUserInput();
 
 //<summery> Reshih da izpolzvam maisv za da moje pri printirane na menuto na consolata
 //da moje da se iterira prez nego vmesto da se copy i pasteva edno i sushto
@@ -79,7 +80,6 @@ void CreateTextFile(const string& directory, const string& filename)
 
 void PrintMenu()
 {
-    int input;
     int counter = 1;
 
     cout << "Welcome to spendings calculator!" << endl;
@@ -90,7 +90,13 @@ void PrintMenu()
         counter++;
         cout << endl;
     }
+    GetUserInput();
+    
+}
 
+void GetUserInput()
+{
+    int input;
     do
     {
         cout << "Choose a day with its number: ";
@@ -131,6 +137,5 @@ void PrintMenu()
         default:
         cout << "No such day of the week!" << endl;
         break;
-
     }
 }
