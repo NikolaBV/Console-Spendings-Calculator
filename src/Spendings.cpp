@@ -44,40 +44,6 @@ int main()
    PrintMenu();
 }
 
-//<summery> Proverqva dali sushtestvuva s fail s ime koeto sme dali
-//Kato argument i ako ne go suzdava
-//</summery>
-bool doesDayTextFileExist(const string& directory, const string& filename) {
-    string fullPath = directory + "/" + filename + ".txt";
-    ifstream file(fullPath);
-
-    if (file.good()) {
-        
-        file.close();
-        return true;
-    }
-    else
-    {
-        CreateTextFile(directory, filename);
-        return false;
-    }
-}
-
-
-//<summery> Suzdava textov file s ime 
-//passnato kato argument na funkciqta s nqkakav primeren input v textoviq file
-//</summery>
-void CreateTextFile(const string& directory, const string& filename)
-{
-    string fullPath = directory + "/" + filename + ".txt";
-    ofstream newFile(fullPath);
-    if (!newFile.is_open()) {
-        cerr << "Error: Failed to create the file " << fullPath << std::endl;
-    }
-
-    newFile.close();
-}
-
 void PrintMenu()
 {
     int counter = 1;
@@ -107,7 +73,6 @@ void GetUserInput()
     switch(input)
     {
         case 1:
-        cout << "Monday\n";
         doesDayTextFileExist("E:\\Programming\\C++\\Console-Spendings-Calculator\\txt","Monday");
         break;
         case 2:
@@ -139,3 +104,64 @@ void GetUserInput()
         break;
     }
 }
+
+//<summery> Proverqva dali sushtestvuva s fail s ime koeto sme dali
+//Kato argument i ako ne go suzdava
+//</summery>
+bool doesDayTextFileExist(const string& directory, const string& filename) {
+    string fullPath = directory + "/" + filename + ".txt";
+    ifstream file(fullPath);
+
+    if (file.good()) {
+        
+        file.close();
+        return true;
+    }
+    else
+    {
+        CreateTextFile(directory, filename);
+        return false;
+    }
+}
+
+//<summery> Suzdava textov file s ime 
+//passnato kato argument na funkciqta s nqkakav primeren input v textoviq file
+//</summery>
+void CreateTextFile(const string& directory, const string& filename)
+{
+    string fullPath = directory + "/" + filename + ".txt";
+    ofstream newFile(fullPath);
+    if (!newFile.is_open()) {
+        cerr << "Error: Failed to create the file " << fullPath << endl;
+    }
+
+    newFile.close();
+}
+
+bool isTextFileEmpty(const string& directory, const string& filename)
+{
+    string fullPath = directory + "/" + filename + ".txt";
+    ifstream file(fullPath);
+
+    if(file.is_open())
+    {
+        char character;
+
+        if(file.get(character))
+        {
+             file.close();
+             return false;
+        }
+        file.close();
+        return true;
+    }
+    else
+    {
+        cout << "The file doesn't exist";
+        CreateTextFile(directory, filename);
+        return true;
+    }
+}
+
+
+
