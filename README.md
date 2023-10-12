@@ -1,5 +1,6 @@
 <img src="Spendings_calculator.png" align="right" />
-# Console application in C++ to help you calculate your weekly spendings
+
+#Console application in C++ to help you calculate your weekly spendings
 
 Especially important for univeristy students short on finances (just like myself)
 
