@@ -15,27 +15,26 @@ Simple spendings calculator in C++ to excercise using all datatypes,
 #include <fstream>
 #include <string>
 #include <conio.h>
-#include <windows.h>
-#include <cstdlib>
+#include <limits>
 
 using namespace std;
 
 //Function Declarations
 void PrintMenu();
 void GetUserInput();
-bool doesDayCSVFileExist(const string& directory, const string& filename);
-void CreateCSVFile(const string& directory, const string& filename);
-bool isCSVFileEmpty(const string& directory, const string& filename);
+bool doesDayCSVFileExist(const string& filename);
+void CreateCSVFile(const string& filename);
+bool isCSVFileEmpty(const string& filename);
 void menuForCSVFileActions(string filename);
-void editCSVFile(string filename);
+void editCSVFile(string& filename);
 void printContetsOfCSVFile(string filename);
 
 //<summery> Reshih da izpolzvam maisv za da moje pri printirane na menuto na consolata
 //da moje da se iterira prez nego vmesto da se copy i pasteva edno i sushto
 //</summery>
-int lengthOfDaysOfTheWeek = 6;
+const int lengthOfDaysOfTheWeek = 6;
 
-string CSVFilesdirectory = "E:\\Programming\\C++\\Console-Spendings-Calculator\\csv\\";
+const string CSVFilesdirectory = "E:\\Programming\\C++\\Console-Spendings-Calculator\\csv\\";
 string daysOfTheWeek[] = {
     "Monday",
     "Tuesday",
@@ -70,56 +69,53 @@ void PrintMenu()
 void GetUserInput()
 {
     int input;
-    string fullPath;
-
-    do
+ 
+    while(input < 1 || input > 7)
     {
         cout << "Choose a day with its number: ";
         cin >> input;
-    } while(input < 1 || input > 7);
+    }
     
 
     switch(input)
     {
         case 1:
-        doesDayCSVFileExist("E:\\Programming\\C++\\Console-Spendings-Calculator\\csv","Monday");
-        fullPath =  CSVFilesdirectory + "/" + daysOfTheWeek[0] + ".csv";
+        doesDayCSVFileExist("Monday");
 
         //TODO Take this logic out in a seperate function
         // This ef else statement underneath in a "IsFileEmpty()" function
-        if(isCSVFileEmpty(CSVFilesdirectory, daysOfTheWeek[0]))
+        if(isCSVFileEmpty(daysOfTheWeek[0]))
         {
            menuForCSVFileActions(daysOfTheWeek[0]);
         }
         else
         {
             printContetsOfCSVFile(daysOfTheWeek[0]);
-            printContetsOfCSVFile(daysOfTheWeek[0]);
         }
         break;
         case 2:
         cout << "Tuesday\n";
-        doesDayCSVFileExist("E:\\Programming\\C++\\Console-Spendings-Calculator\\csv","Tuesday");
+        doesDayCSVFileExist("Tuesday");
         break;
         case 3:
         cout << "Wednesday";
-        doesDayCSVFileExist("E:\\Programming\\C++\\Console-Spendings-Calculator\\csv","Wednesday");
+        doesDayCSVFileExist("Wednesday");
         break;
         case 4:
         cout << "Thursday";
-        doesDayCSVFileExist("E:\\Programming\\C++\\Console-Spendings-Calculator\\csv","Thursday");
+        doesDayCSVFileExist("Thursday");
         break;
         case 5:
         cout << "Friday";
-        doesDayCSVFileExist("E:\\Programming\\C++\\Console-Spendings-Calculator\\csv","Friday");      
+        doesDayCSVFileExist("Friday");      
         break;
         case 6:
         cout << "Saturday";
-        doesDayCSVFileExist("E:\\Programming\\C++\\Console-Spendings-Calculator\\csv","Saturday");
+        doesDayCSVFileExist("Saturday");
         break;
         case 7:
         cout << "Sunday";
-        doesDayCSVFileExist("E:\\Programming\\C++\\Console-Spendings-Calculator\\csv","Sunday");
+        doesDayCSVFileExist("Sunday");
         break;
         default:
         cout << "No such day of the week!" << endl;
@@ -139,8 +135,8 @@ void menuForCSVFileActions(string filename)
 
         if (ch == 'e' || ch == 'E') 
         {
+            cin.ignore(numeric_limits<std::streamsize>::max(), '\n');
             editCSVFile(filename);
-            cout << "Go to the file editing menu (it doesnt exist yet, i am working on it)" << endl;
         } 
         else if (ch == 'b' || ch == 'B') 
         {
@@ -153,9 +149,34 @@ void menuForCSVFileActions(string filename)
             return;
         }
 }
-void editCSVFile(string filename)
+void editCSVFile(string& filename)
 {  
-     
+    ofstream outputFile(CSVFilesdirectory + filename + ".csv");
+
+     if (!outputFile.is_open()) {
+        std::cerr << "Error: Unable to open file for writing." << endl;
+        return;
+    }
+
+    cout << "Enter your spending data for the day. To save and quit, type ':wq'. To quit without saving, type ':q'." << endl;
+
+    while (true) {
+        string input;
+        cout << "Enter spending (name, price): ";
+        getline(cin, input);
+
+        if (input == ":wq") {
+            cout << "Saving and quitting." << endl;
+            break;
+        } else if (input == ":q") {
+            cout << "Quitting without saving." << endl;
+            break;
+        } else {
+            outputFile << input << endl;
+        }
+    }
+
+    outputFile.close();
 }
 
 void printContetsOfCSVFile(string filename)
@@ -176,9 +197,9 @@ void printContetsOfCSVFile(string filename)
 //<summery> Proverqva dali sushtestvuva s fail s ime koeto sme dali
 //Kato argument i ako ne go suzdava
 //</summery>
-bool doesDayCSVFileExist(const string& directory, const string& filename) {
-    string fullPath = directory + "/" + filename + ".csv";
-    ifstream file(fullPath);
+bool doesDayCSVFileExist(const string& filename) {
+   
+    ifstream file(CSVFilesdirectory + filename + ".csv");
 
     if (file.good()) {
         
@@ -187,7 +208,8 @@ bool doesDayCSVFileExist(const string& directory, const string& filename) {
     }
     else
     {
-        CreateCSVFile(directory, filename);
+        CreateCSVFile(filename);
+        file.close();
         return false;
     }
 }
@@ -195,12 +217,11 @@ bool doesDayCSVFileExist(const string& directory, const string& filename) {
 //<summery> Suzdava CSVov file s ime 
 //passnato kato argument na funkciqta s nqkakav primeren input v CSVoviq file
 //</summery>
-void CreateCSVFile(const string& directory, const string& filename)
+void CreateCSVFile(const string& filename)
 {
-    string fullPath = directory + "/" + filename + ".csv";
-    ofstream newFile(fullPath);
+    ofstream newFile(CSVFilesdirectory + filename + ".csv");
     if (!newFile.is_open()) {
-        cerr << "Error: Failed to create the file " << fullPath << endl;
+        cerr << "Error: Failed to create the file " << CSVFilesdirectory + filename + ".csv" << endl;
     }
     newFile.close();
     cout << filename <<" was created";
@@ -209,10 +230,9 @@ void CreateCSVFile(const string& directory, const string& filename)
     PrintMenu();
 }
 
-bool isCSVFileEmpty(const string& directory, const string& filename)
+bool isCSVFileEmpty(const string& filename)
 {
-    string fullPath = directory + "/" + filename + ".csv";
-    ifstream file(fullPath);
+    ifstream file(CSVFilesdirectory + filename + ".csv");
 
     if(file.is_open())
     {
@@ -229,7 +249,7 @@ bool isCSVFileEmpty(const string& directory, const string& filename)
     else
     {
         cout << "The file doesn't exist";
-        CreateCSVFile(directory, filename);
+        CreateCSVFile(filename);
         return true;
     }
 }
