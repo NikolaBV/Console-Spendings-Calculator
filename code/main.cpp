@@ -1,4 +1,4 @@
-#include "spendings_calculator.h"
+#include "headers/spendings_calculator.h"
 
 int main()
 {

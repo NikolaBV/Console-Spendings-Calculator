@@ -1,4 +1,4 @@
-#include "spendings_calculator.h"
+#include "headers/spendings_calculator.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -63,7 +63,7 @@ void SpendingsCalculator::GetUserInput()
         }
         else
         {
-            printContentsOfCSVFile(daysOfTheWeek[0]);
+            menuForCSVFileActions(daysOfTheWeek[0]);
         }
         break;
         case 2:
@@ -125,12 +125,12 @@ void SpendingsCalculator::GetUserInput()
 void SpendingsCalculator::editCSVFile(string& filename)
 {  
     ofstream outputFile(CSVFilesdirectory + filename + ".csv");
-
+    
      if (!outputFile.is_open()) {
         std::cerr << "Error: Unable to open file for writing." << endl;
         return;
     }
-
+    printContentsOfCSVFile(filename);
     cout << "Enter your spending data for the day. To save and quit, type ':wq'. To quit without saving, type ':q'." << endl;
 
     while (true) {
