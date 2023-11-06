@@ -1,40 +1,15 @@
-/*
-Simple spendings calculator in C++ to excercise using all datatypes,
- operators, loops, conditional statements, arrays and functions with parameters
-*/
-
-/*
-   1. Main menu with a switch case menu in which you can choose which day of the week
-   you are going to be loading in spendings for
-   2. The spendings have to be saved after the program is closed. This will be done by on choosing a day of the week
-   from the menu, the program will check if there is a CSV file with the name of the day in the folder. If there is
-   it will print the existing data to the console, if not it will create a CSV file and prompt you to write your savings in
-   
-*/
+#include "spendings_calculator.h"
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <conio.h>
 #include <limits>
+#include <conio.h>
 
 using namespace std;
 
-//Function Declarations
-void PrintMenu();
-void GetUserInput();
-bool doesDayCSVFileExist(const string& filename);
-void CreateCSVFile(const string& filename);
-bool isCSVFileEmpty(const string& filename);
-void menuForCSVFileActions(string filename);
-void editCSVFile(string& filename);
-void printContetsOfCSVFile(string filename);
-
-//<summery> Reshih da izpolzvam maisv za da moje pri printirane na menuto na consolata
-//da moje da se iterira prez nego vmesto da se copy i pasteva edno i sushto
-//</summery>
 const int lengthOfDaysOfTheWeek = 6;
-
 const string CSVFilesdirectory = "E:\\Programming\\C++\\Console-Spendings-Calculator\\csv\\";
+
 string daysOfTheWeek[] = {
     "Monday",
     "Tuesday",
@@ -44,15 +19,15 @@ string daysOfTheWeek[] = {
     "Saturday",
     "Sunday",
 };
+SpendingsCalculator::SpendingsCalculator() {
 
-int main()
-{
-   PrintMenu();
 }
 
-//<summery> Prints the main menu on the console
-//</summery>
-void PrintMenu()
+void SpendingsCalculator::SpendingsCalculator::Run() {
+    PrintMenu();
+}
+
+void SpendingsCalculator::PrintMenu()
 {
     int counter = 1;
     cout << "Welcome to spendings calculator!" << endl;
@@ -66,7 +41,7 @@ void PrintMenu()
     GetUserInput();
     
 }
-void GetUserInput()
+void SpendingsCalculator::GetUserInput()
 {
     int input;
  
@@ -75,8 +50,6 @@ void GetUserInput()
         cout << "Choose a day with its number: ";
         cin >> input;
     }
-    
-
     switch(input)
     {
         case 1:
@@ -90,7 +63,7 @@ void GetUserInput()
         }
         else
         {
-            printContetsOfCSVFile(daysOfTheWeek[0]);
+            printContentsOfCSVFile(daysOfTheWeek[0]);
         }
         break;
         case 2:
@@ -123,7 +96,7 @@ void GetUserInput()
     }
 }
 
-void menuForCSVFileActions(string filename)
+ void SpendingsCalculator::menuForCSVFileActions(std::string& filename)
 {
     system("cls");
     cout         << "No spendings for this day.\n";
@@ -149,7 +122,7 @@ void menuForCSVFileActions(string filename)
             return;
         }
 }
-void editCSVFile(string& filename)
+void SpendingsCalculator::editCSVFile(string& filename)
 {  
     ofstream outputFile(CSVFilesdirectory + filename + ".csv");
 
@@ -179,7 +152,7 @@ void editCSVFile(string& filename)
     outputFile.close();
 }
 
-void printContetsOfCSVFile(string filename)
+void SpendingsCalculator::printContentsOfCSVFile(std::string& filename)
 {
     ifstream inputFile(CSVFilesdirectory + filename + ".csv");
 
@@ -197,7 +170,7 @@ void printContetsOfCSVFile(string filename)
 //<summery> Proverqva dali sushtestvuva s fail s ime koeto sme dali
 //Kato argument i ako ne go suzdava
 //</summery>
-bool doesDayCSVFileExist(const string& filename) {
+bool SpendingsCalculator::doesDayCSVFileExist(const string& filename) {
    
     ifstream file(CSVFilesdirectory + filename + ".csv");
 
@@ -217,7 +190,7 @@ bool doesDayCSVFileExist(const string& filename) {
 //<summery> Suzdava CSVov file s ime 
 //passnato kato argument na funkciqta s nqkakav primeren input v CSVoviq file
 //</summery>
-void CreateCSVFile(const string& filename)
+void SpendingsCalculator::CreateCSVFile(const std::string& filename)
 {
     ofstream newFile(CSVFilesdirectory + filename + ".csv");
     if (!newFile.is_open()) {
@@ -230,7 +203,7 @@ void CreateCSVFile(const string& filename)
     PrintMenu();
 }
 
-bool isCSVFileEmpty(const string& filename)
+bool SpendingsCalculator::isCSVFileEmpty(string& filename)
 {
     ifstream file(CSVFilesdirectory + filename + ".csv");
 
@@ -253,6 +226,3 @@ bool isCSVFileEmpty(const string& filename)
         return true;
     }
 }
-
-
-
