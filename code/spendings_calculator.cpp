@@ -124,15 +124,20 @@ void SpendingsCalculator::GetUserInput()
 }
 void SpendingsCalculator::editCSVFile(string& filename)
 {  
-    ofstream outputFile(CSVFilesdirectory + filename + ".csv");
+    ofstream outputFile(CSVFilesdirectory + filename + ".csv", ios::app);
     
      if (!outputFile.is_open()) {
         std::cerr << "Error: Unable to open file for writing." << endl;
         return;
     }
-    printContentsOfCSVFile(filename);
-    cout << "Enter your spending data for the day. To save and quit, type ':wq'. To quit without saving, type ':q'." << endl;
+    
+    outputFile.seekp(0, ios::end);
+    if (outputFile.tellp() == 0) {
+        // If the file is empty, write the header row
+        outputFile << "description, price" << endl;
+    }
 
+    cout << "Enter your spending data for the day. To save and quit, type ':wq'. To quit without saving, type ':q'." << endl;
     while (true) {
         string input;
         cout << "Enter spending (name, price): ";
@@ -196,6 +201,9 @@ void SpendingsCalculator::CreateCSVFile(const std::string& filename)
     if (!newFile.is_open()) {
         cerr << "Error: Failed to create the file " << CSVFilesdirectory + filename + ".csv" << endl;
     }
+
+    
+
     newFile.close();
     cout << filename <<" was created";
     cin.get();
