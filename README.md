@@ -13,9 +13,7 @@ You clone the repository
 git clone https://github.com/NikolaBV/Console-Spendings-Calculator.git
 ```
 
-then you head to the "code" folder where the main cpp file is (main.cpp)
-
-you compile it
+Go to the main directory of the repository and compile it using this command
 
 ```
 g++ -Iinclude src/main.cpp src/spendings_calculator.cpp -o build/spendings
@@ -24,7 +22,7 @@ g++ -Iinclude src/main.cpp src/spendings_calculator.cpp -o build/spendings
 and run it
 
 ```
-./spendings
+.\build\spendings.exe
 ```
 
 That's it!
