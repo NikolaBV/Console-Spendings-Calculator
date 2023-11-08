@@ -124,13 +124,16 @@ void SpendingsCalculator::GetUserInput()
 }
 void SpendingsCalculator::editCSVFile(string& filename)
 {  
+    //The ios::app opens the file in "append" mode instead of
+    //overwriting it
     ofstream outputFile(CSVFilesdirectory + filename + ".csv", ios::app);
     
      if (!outputFile.is_open()) {
         std::cerr << "Error: Unable to open file for writing." << endl;
         return;
     }
-    
+
+    //Checks if the file is empty
     outputFile.seekp(0, ios::end);
     if (outputFile.tellp() == 0) {
         // If the file is empty, write the header row
