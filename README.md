@@ -13,11 +13,11 @@ You clone the repository
 git clone https://github.com/NikolaBV/Console-Spendings-Calculator.git
 ```
 
-then you head to the "src" folder where the main cpp file is (Spendings.cpp)
+then you head to the "code" folder where the main cpp file is (main.cpp)
 
 you compile it 
 ```
-g++ Spendings.cpp -o spendings
+g++ main.cpp Spendings_calculator.cpp -o spendings
 ```
 
 and run it
