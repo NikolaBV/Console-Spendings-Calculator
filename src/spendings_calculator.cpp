@@ -139,18 +139,24 @@ void SpendingsCalculator::editCSVFile(string& filename)
 
     cout << "Enter your spending data for the day. To save and quit, type ':wq'. To quit without saving, type ':q'." << endl;
     while (true) {
-        string input;
+        std::string input;
+
         cout << "Enter spending (name, price): ";
         getline(cin, input);
 
+        
         if (input == ":wq") {
             cout << "Saving and quitting." << endl;
             break;
         } else if (input == ":q") {
             cout << "Quitting without saving." << endl;
             break;
-        } else {
-            outputFile << input << endl;
+        }
+        else if (!isValidInputFormat(input)) {
+            cout << "Invalid input format. Please use (description, price) format." << endl;
+        }
+         else {
+                outputFile << input << endl;  
         }
     }
 
@@ -233,4 +239,11 @@ bool SpendingsCalculator::isCSVFileEmpty(string& filename)
         CreateCSVFile(filename);
         return true;
     }
+}
+bool SpendingsCalculator::isValidInputFormat(const std::string& input) {
+    size_t commaPosition = input.find(',');
+    if (commaPosition == std::string::npos || commaPosition == 0 || commaPosition == input.length() - 1) {
+        return false;
+    }
+    return true;
 }
