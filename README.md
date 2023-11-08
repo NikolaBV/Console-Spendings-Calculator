@@ -15,9 +15,10 @@ git clone https://github.com/NikolaBV/Console-Spendings-Calculator.git
 
 then you head to the "code" folder where the main cpp file is (main.cpp)
 
-you compile it 
+you compile it
+
 ```
-g++ main.cpp Spendings_calculator.cpp -o spendings
+g++ -Iinclude src/main.cpp src/spendings_calculator.cpp -o build/spendings
 ```
 
 and run it
@@ -40,4 +41,3 @@ object oriented programming, data structures and algorithms, memory management, 
 It is under development because as i mentioned in the previous section I am using this project to get familiar
 with C++ as a language so new features will be added (and maybe the whole structure of the project) continuously.
 I am planning to turn it into a full stack application with a database but for now I'm trying to keep it as simple as possible.
-
