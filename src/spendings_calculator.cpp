@@ -8,7 +8,7 @@
 using namespace std;
 
 const int lengthOfDaysOfTheWeek = 6;
-const string CSVFilesdirectory = "E:\\Programming\\C++\\Console-Spendings-Calculator\\csv\\";
+const string CSVFilesdirectory = "csv\\";
 
 string daysOfTheWeek[] = {
     "Monday",
