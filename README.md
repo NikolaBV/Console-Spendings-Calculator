@@ -39,3 +39,10 @@ object oriented programming, data structures and algorithms, memory management, 
 It is under development because as i mentioned in the previous section I am using this project to get familiar
 with C++ as a language so new features will be added (and maybe the whole structure of the project) continuously.
 I am planning to turn it into a full stack application with a database but for now I'm trying to keep it as simple as possible.
+
+# Contributing
+
+As I said the projects main focus is learning. But learning not just for me, anyone who finds the project interesting
+and sees an issue they would work on is welcome to do so. I don't have a lot of requierments for contributions, all I 
+will tell you is to follow the conventions of C++, keep it as memory efficient as possible and document what you have 
+done in detail in the comments in the pull requests of the messeges in the commits. Thanks!
