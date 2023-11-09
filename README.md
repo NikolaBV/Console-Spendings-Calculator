@@ -1,4 +1,4 @@
-<img src="Spendings_calculator.png" align="center" />
+<img src="resources/Spendings_calculator.png" align="center" />
 
 # Console application in C++ to help you calculate your weekly spendings
 
