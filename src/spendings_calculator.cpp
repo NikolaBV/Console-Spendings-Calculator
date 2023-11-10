@@ -4,6 +4,8 @@
 #include <string>
 #include <limits>
 #include <conio.h>
+#include <algorithm>
+#include <numeric>
 
 using namespace std;
 
@@ -43,7 +45,7 @@ void SpendingsCalculator::PrintMenu()
 }
 void SpendingsCalculator::GetUserInput()
 {
-    int input;
+    int input = 0;
  
     while(input < 1 || input > 7)
     {
@@ -177,6 +179,79 @@ void SpendingsCalculator::printContentsOfCSVFile(std::string& filename)
     } else {
         std::cerr << "Unable to open the file." << endl;
     }
+}
+//Read the csv file and return the data
+std::vector<std::vector<std::string>> SpendingsCalculator::readCSVFile(const std::string& filePath)
+{
+    // Vector to store CSV content
+    std::vector<std::vector<std::string>> data;
+    std::ifstream file(filePath);
+    std::string line;
+
+    // Check if file cannot be opened and return empty data
+    if (!file.is_open()) {
+        std::cerr << "Error opening file: " << filePath << std::endl;
+        return data;
+    }
+    //Get each row
+    while (std::getline(file, line)) {
+        std::vector<std::string> row;
+        std::istringstream lineStream(line);
+        std::string cell;
+
+        while (std::getline(lineStream, cell, ',')) {
+            row.push_back(cell);
+        }
+
+        data.push_back(row);
+    }
+
+    file.close();
+    return data;
+}
+//Find the values for a specific column based on its name and return them
+std::vector<std::string> SpendingsCalculator::findColumn(const std::vector<std::vector<std::string>>& data, const std::string& columenName)
+{
+    std::vector<std::string> columnValues;
+    size_t columnIndex = 0;
+    if (!data.empty()) {
+        // To find the specific column index
+        for (const auto& header : data.front()) {
+            if (header == columenName) {
+                break;
+            }
+            ++columnIndex;
+        }
+
+        // Get column values after finding the index, start loop from 1 to skip the header row
+        for (size_t i = 1; i < data.size(); ++i) {
+            if (columnIndex < data[i].size()) {
+                columnValues.push_back(data[i][columnIndex]);
+            }
+            else {
+                // Push back empty string if the column doesn't have a value for that row
+                columnValues.push_back("");
+            }
+        }
+    }
+
+    return columnValues;
+}
+//Calculate the sum of all spendings for that day based on the retrieved column values
+double SpendingsCalculator::sumOfAllSpendings(const std::vector<std::string>& spendingValues)
+{
+    double sumOfAll = 0.0;
+    std::vector<double> doubleSpendingsVector(spendingValues.size());
+
+    //Use transform and stod as a lambda expression to change the values from string to double for each element in the vector
+    std::transform(spendingValues.begin(), spendingValues.end(), doubleSpendingsVector.begin(), [](const std::string& value) {
+        return stod(value);
+        });
+    //Sum up all the elements inside the vector of doubles using accumulate
+    sumOfAll = std::accumulate(doubleSpendingsVector.begin(), doubleSpendingsVector.end(), 0.0);
+    std::cout << "Total spendings is: " << sumOfAll << std::endl;
+
+    return sumOfAll;
 }
 //<summery> Proverqva dali sushtestvuva s fail s ime koeto sme dali
 //Kato argument i ako ne go suzdava
