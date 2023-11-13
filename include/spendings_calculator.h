@@ -13,7 +13,6 @@ class SpendingsCalculator {
         void Run();
         void PrintMenu();
         void GetUserInput();
-        bool doesDayCSVFileExist(const std::string& filename);
         void CreateCSVFile(const std::string& filename);
         bool isCSVFileEmpty(std::string& filename);
         bool isValidInputFormat(const std::string& input);

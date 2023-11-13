@@ -55,8 +55,6 @@ void SpendingsCalculator::GetUserInput()
     switch(input)
     {
         case 1:
-        doesDayCSVFileExist("Monday");
-
         //TODO Take this logic out in a seperate function
         // This ef else statement underneath in a "IsFileEmpty()" function
         if(isCSVFileEmpty(daysOfTheWeek[0]))
@@ -69,28 +67,24 @@ void SpendingsCalculator::GetUserInput()
         }
         break;
         case 2:
-        cout << "Tuesday\n";
-        doesDayCSVFileExist("Tuesday");
+        if(isCSVFileEmpty(daysOfTheWeek[1]))
+        {
+           menuForCSVFileActions(daysOfTheWeek[1]);
+        }
+        else
+        {
+            menuForCSVFileActions(daysOfTheWeek[1]);
+        }
         break;
         case 3:
-        cout << "Wednesday";
-        doesDayCSVFileExist("Wednesday");
         break;
         case 4:
-        cout << "Thursday";
-        doesDayCSVFileExist("Thursday");
         break;
-        case 5:
-        cout << "Friday";
-        doesDayCSVFileExist("Friday");      
+        case 5:  
         break;
         case 6:
-        cout << "Saturday";
-        doesDayCSVFileExist("Saturday");
         break;
         case 7:
-        cout << "Sunday";
-        doesDayCSVFileExist("Sunday");
         break;
         default:
         cout << "No such day of the week!" << endl;
@@ -163,6 +157,18 @@ void SpendingsCalculator::editCSVFile(string& filename)
     }
 
     outputFile.close();
+    // Read the file and calculate the sum after saving
+    std::vector<std::vector<std::string>> data = readCSVFile(CSVFilesdirectory + filename + ".csv");
+    
+    // Exclude ":wq" from spendingValues
+    std::vector<std::string> spendingValues;
+    for (const auto& row : data) {
+        if (row.size() > 1 && row[1] != ":wq") {
+            spendingValues.push_back(row[1]);
+        }
+    }
+
+    double sum = sumOfAllSpendings(spendingValues);
 }
 
 void SpendingsCalculator::printContentsOfCSVFile(std::string& filename)
@@ -240,37 +246,23 @@ std::vector<std::string> SpendingsCalculator::findColumn(const std::vector<std::
 //Calculate the sum of all spendings for that day based on the retrieved column values
 double SpendingsCalculator::sumOfAllSpendings(const std::vector<std::string>& spendingValues)
 {
-    double sumOfAll = 0.0;
-    std::vector<double> doubleSpendingsVector(spendingValues.size());
+     double sumOfAll = 0.0;
+    std::vector<double> doubleSpendingsVector;
 
-    //Use transform and stod as a lambda expression to change the values from string to double for each element in the vector
-    std::transform(spendingValues.begin(), spendingValues.end(), doubleSpendingsVector.begin(), [](const std::string& value) {
-        return stod(value);
-        });
-    //Sum up all the elements inside the vector of doubles using accumulate
+    for (const std::string& value : spendingValues) {
+        if (value != ":wq") {
+            try {
+                doubleSpendingsVector.push_back(stod(value));
+            } catch (const std::invalid_argument& e) {
+            }
+        }
+    }
+
+    // Sum up all the elements inside the vector of doubles using accumulate
     sumOfAll = std::accumulate(doubleSpendingsVector.begin(), doubleSpendingsVector.end(), 0.0);
     std::cout << "Total spendings is: " << sumOfAll << std::endl;
 
     return sumOfAll;
-}
-//<summery> Proverqva dali sushtestvuva s fail s ime koeto sme dali
-//Kato argument i ako ne go suzdava
-//</summery>
-bool SpendingsCalculator::doesDayCSVFileExist(const string& filename) {
-   
-    ifstream file(CSVFilesdirectory + filename + ".csv");
-
-    if (file.good()) {
-        
-        file.close();
-        return true;
-    }
-    else
-    {
-        CreateCSVFile(filename);
-        file.close();
-        return false;
-    }
 }
 
 //<summery> Suzdava CSVov file s ime 
