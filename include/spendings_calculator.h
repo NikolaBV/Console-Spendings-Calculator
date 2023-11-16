@@ -14,6 +14,7 @@ class SpendingsCalculator {
         void PrintMenu();
         void GetUserInput();
         void CreateCSVFile(const std::string& filename);
+        void createWeeklySpendingsCSV();
         bool isCSVFileEmpty(std::string& filename);
         bool isValidInputFormat(const std::string& input);
         void menuForCSVFileActions(std::string& filename);

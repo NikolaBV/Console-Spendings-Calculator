@@ -26,9 +26,23 @@ SpendingsCalculator::SpendingsCalculator() {
 }
 
 void SpendingsCalculator::SpendingsCalculator::Run() {
+    createWeeklySpendingsCSV();
     PrintMenu();
 }
-
+void SpendingsCalculator::createWeeklySpendingsCSV()
+{
+     ofstream newFile(CSVFilesdirectory + "WeeklySpendings" + ".csv");
+    if (!newFile.is_open()) {
+        cerr << "Error: Failed to create the file " << CSVFilesdirectory + "WeeklySpendings" + ".csv" << endl;
+    }
+    newFile.seekp(0, ios::end);
+    if (newFile.tellp() == 0) {
+        // If the file is empty, write the header row
+        newFile << "Week" << endl;
+    }
+    newFile.close();
+    cin.get();
+}
 void SpendingsCalculator::PrintMenu()
 {
     int counter = 1;
