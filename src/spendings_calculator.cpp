@@ -57,24 +57,12 @@ void SpendingsCalculator::GetUserInput()
         case 1:
         //TODO Take this logic out in a seperate function
         // This ef else statement underneath in a "IsFileEmpty()" function
-        if(isCSVFileEmpty(daysOfTheWeek[0]))
-        {
-           menuForCSVFileActions(daysOfTheWeek[0]);
-        }
-        else
-        {
-            menuForCSVFileActions(daysOfTheWeek[0]);
-        }
+        isCSVFileEmpty(daysOfTheWeek[0]);
+        menuForCSVFileActions(daysOfTheWeek[0]);
         break;
         case 2:
-        if(isCSVFileEmpty(daysOfTheWeek[1]))
-        {
-           menuForCSVFileActions(daysOfTheWeek[1]);
-        }
-        else
-        {
-            menuForCSVFileActions(daysOfTheWeek[1]);
-        }
+        isCSVFileEmpty(daysOfTheWeek[1]);
+        menuForCSVFileActions(daysOfTheWeek[1]);
         break;
         case 3:
         break;
