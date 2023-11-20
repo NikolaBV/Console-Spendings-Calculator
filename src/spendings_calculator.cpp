@@ -6,6 +6,8 @@
 #include <conio.h>
 #include <algorithm>
 #include <numeric>
+#include <ctime>
+#include <sstream>
 
 using namespace std;
 
@@ -21,11 +23,18 @@ string daysOfTheWeek[] = {
     "Saturday",
     "Sunday",
 };
+
+struct Record {
+    int week;
+    double spendings;
+};
+
 SpendingsCalculator::SpendingsCalculator() {
 
 }
 
 void SpendingsCalculator::SpendingsCalculator::Run() {
+    currentWeek = getCurrentWeek();
     createWeeklySpendingsCSV();
     PrintMenu();
 }
@@ -38,7 +47,7 @@ void SpendingsCalculator::createWeeklySpendingsCSV()
     newFile.seekp(0, ios::end);
     if (newFile.tellp() == 0) {
         // If the file is empty, write the header row
-        newFile << "Week" << endl;
+        newFile << "Week, spendings" << endl;
     }
     newFile.close();
     cin.get();
@@ -96,7 +105,6 @@ void SpendingsCalculator::GetUserInput()
 
  void SpendingsCalculator::menuForCSVFileActions(std::string& filename)
 {
-    system("cls");
     cout         << "No spendings for this day.\n";
     cout         << "Press E to start editing the file\n"
                  << "Press B to go back to the menu\n"
@@ -112,7 +120,6 @@ void SpendingsCalculator::GetUserInput()
         else if (ch == 'b' || ch == 'B') 
         {
             //TODO Figure out a way to clear the console before printing the menu again
-            system("cls");
             PrintMenu();       
         }
         else if(ch == 'q' || ch == 'Q')
@@ -171,6 +178,15 @@ void SpendingsCalculator::editCSVFile(string& filename)
     }
 
     double sum = sumOfAllSpendings(spendingValues);
+
+   // Update "WeeklySpendings.csv" with the sum of spendings for the current week
+    ofstream weeklySpendingsFile(CSVFilesdirectory + "WeeklySpendings.csv");
+    if (!weeklySpendingsFile.is_open()) {
+        std::cerr << "Error: Unable to open WeeklySpendings.csv for writing." << endl;
+        return;
+    }
+    weeklySpendingsFile << getCurrentWeek() << ", " << sum << endl;
+    weeklySpendingsFile.close();
 }
 
 void SpendingsCalculator::printContentsOfCSVFile(std::string& filename)
@@ -282,7 +298,6 @@ void SpendingsCalculator::CreateCSVFile(const std::string& filename)
     newFile.close();
     cout << filename <<" was created";
     cin.get();
-    system("cls");
     PrintMenu();
 }
 
@@ -315,4 +330,19 @@ bool SpendingsCalculator::isValidInputFormat(const std::string& input) {
         return false;
     }
     return true;
+}
+
+ void findSpendingsForAlldaysOfTheWeek()
+ {
+    //TODO Make it with a loop that uses the lobal array with the days of the week and ierating through it 
+    //searches through the CSV folder to find the sum of all spendings for the week
+ }
+
+int SpendingsCalculator::getCurrentWeek() 
+{
+    time_t t = time(nullptr);
+    tm* now = localtime(&t);
+    // Assuming that the week starts from Sunday, tm_wday ranges from 0 (Sunday) to 6 (Saturday)
+    int currentWeek = now->tm_yday / 7;
+    return currentWeek + 1; // Add 1 to start counting from 1 instead of 0
 }
