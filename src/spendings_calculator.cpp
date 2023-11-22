@@ -8,6 +8,7 @@
 #include <numeric>
 #include <ctime>
 #include <sstream>
+#include <filesystem>
 
 using namespace std;
 
@@ -40,7 +41,25 @@ void SpendingsCalculator::SpendingsCalculator::Run() {
 }
 void SpendingsCalculator::createWeeklySpendingsCSV()
 {
-     ofstream newFile(CSVFilesdirectory + "WeeklySpendings" + ".csv");
+    // Specify the directory path
+    std::filesystem::path directoryPath("E:\\Programming\\C++\\Console-Spendings-Calculator\\csv\\");
+
+    // Specify the file name
+    std::string fileName = "WeeklySpendings.csv";
+
+    // Combine the directory path and file name to create the full file path
+    std::filesystem::path filePath = directoryPath / fileName;
+
+    // Check if the file exists
+    if (std::filesystem::exists(filePath)) {
+        std::cout << "The file exists." << std::endl;
+        return;
+    } else {
+        std::cout << "The file does not exist." << std::endl;
+    }
+
+    //
+    ofstream newFile(CSVFilesdirectory + "WeeklySpendings" + ".csv");
     if (!newFile.is_open()) {
         cerr << "Error: Failed to create the file " << CSVFilesdirectory + "WeeklySpendings" + ".csv" << endl;
     }
@@ -120,7 +139,7 @@ void SpendingsCalculator::GetUserInput()
         else if (ch == 'b' || ch == 'B') 
         {
             //TODO Figure out a way to clear the console before printing the menu again
-            PrintMenu();       
+            returnToMenu();     
         }
         else if(ch == 'q' || ch == 'Q')
         {
@@ -166,6 +185,7 @@ void SpendingsCalculator::editCSVFile(string& filename)
     }
 
     outputFile.close();
+     returnToMenu();
     // Read the file and calculate the sum after saving
     std::vector<std::vector<std::string>> data = readCSVFile(CSVFilesdirectory + filename + ".csv");
     
@@ -178,15 +198,7 @@ void SpendingsCalculator::editCSVFile(string& filename)
     }
 
     double sum = sumOfAllSpendings(spendingValues);
-
-   // Update "WeeklySpendings.csv" with the sum of spendings for the current week
-    ofstream weeklySpendingsFile(CSVFilesdirectory + "WeeklySpendings.csv");
-    if (!weeklySpendingsFile.is_open()) {
-        std::cerr << "Error: Unable to open WeeklySpendings.csv for writing." << endl;
-        return;
-    }
-    weeklySpendingsFile << getCurrentWeek() << ", " << sum << endl;
-    weeklySpendingsFile.close();
+    updateWeeklySpendings(sum);
 }
 
 void SpendingsCalculator::printContentsOfCSVFile(std::string& filename)
@@ -217,7 +229,11 @@ std::vector<std::vector<std::string>> SpendingsCalculator::readCSVFile(const std
         std::cerr << "Error opening file: " << filePath << std::endl;
         return data;
     }
-    //Get each row
+
+    // Skip the first row (header)
+    std::getline(file, line);
+
+    // Get each row
     while (std::getline(file, line)) {
         std::vector<std::string> row;
         std::istringstream lineStream(line);
@@ -264,14 +280,25 @@ std::vector<std::string> SpendingsCalculator::findColumn(const std::vector<std::
 //Calculate the sum of all spendings for that day based on the retrieved column values
 double SpendingsCalculator::sumOfAllSpendings(const std::vector<std::string>& spendingValues)
 {
-     double sumOfAll = 0.0;
+    double sumOfAll = 0.0;
     std::vector<double> doubleSpendingsVector;
 
     for (const std::string& value : spendingValues) {
         if (value != ":wq") {
             try {
-                doubleSpendingsVector.push_back(stod(value));
+                size_t pos;  // Variable to capture the position of the first non-numeric character
+                double convertedValue = std::stod(value, &pos);
+
+                // Check if the entire string was converted (pos == value.length())
+                // If not, skip this value
+                if (pos == value.length()) {
+                    doubleSpendingsVector.push_back(convertedValue);
+                } else {
+                    std::cerr << "Warning: Non-numeric characters found in value: \"" << value << "\". Skipping." << std::endl;
+                }
             } catch (const std::invalid_argument& e) {
+                // Handle the invalid argument (e.g., print a warning message)
+                std::cerr << "Warning: Invalid argument for value: \"" << value << "\". Skipping." << std::endl;
             }
         }
     }
@@ -332,12 +359,6 @@ bool SpendingsCalculator::isValidInputFormat(const std::string& input) {
     return true;
 }
 
- void findSpendingsForAlldaysOfTheWeek()
- {
-    //TODO Make it with a loop that uses the lobal array with the days of the week and ierating through it 
-    //searches through the CSV folder to find the sum of all spendings for the week
- }
-
 int SpendingsCalculator::getCurrentWeek() 
 {
     time_t t = time(nullptr);
@@ -345,4 +366,52 @@ int SpendingsCalculator::getCurrentWeek()
     // Assuming that the week starts from Sunday, tm_wday ranges from 0 (Sunday) to 6 (Saturday)
     int currentWeek = now->tm_yday / 7;
     return currentWeek + 1; // Add 1 to start counting from 1 instead of 0
+}
+
+void SpendingsCalculator::updateWeeklySpendings(double updatedSpending)
+{
+     // Read the current total spendings for the week from "WeeklySpendings.csv"
+    std::vector<std::vector<std::string>> weeklySpendingsData = readCSVFile(CSVFilesdirectory + "WeeklySpendings.csv");
+
+    // Find the column values for the week and spendings
+    std::vector<std::string> weekValues = findColumn(weeklySpendingsData, "Week");
+    std::vector<std::string> spendingsValues = findColumn(weeklySpendingsData, "spendings");
+
+    // Find the index of the current week
+    auto weekIndex = std::find(weekValues.begin(), weekValues.end(), std::to_string(currentWeek));
+
+    // If the current week is found, update the corresponding spendings value
+    if (weekIndex != weekValues.end()) {
+        size_t index = std::distance(weekValues.begin(), weekIndex);
+
+        // Update the spendings value for the current week
+        if (index < spendingsValues.size()) {
+            double currentSpendings = std::stod(spendingsValues[index]);
+            currentSpendings += updatedSpending;
+
+            // Update the spendings value in the vector
+            spendingsValues[index] = std::to_string(currentSpendings);
+        }
+    } else {
+        // If the current week is not found, add a new entry for the current week
+        weekValues.push_back(std::to_string(currentWeek));
+        spendingsValues.push_back(std::to_string(updatedSpending));
+    }
+
+    // Update the "WeeklySpendings.csv" file with the new spendings values
+    std::ofstream weeklySpendingsFile(CSVFilesdirectory + "WeeklySpendings.csv");
+    if (!weeklySpendingsFile.is_open()) {
+        std::cerr << "Error: Unable to open WeeklySpendings.csv for writing." << std::endl;
+        return;
+    }
+
+    // Write the header row
+    weeklySpendingsFile << "Week, spendings" << std::endl;
+
+    // Write the updated spendings values
+    for (size_t i = 0; i < weekValues.size(); ++i) {
+        weeklySpendingsFile << weekValues[i] << "," << spendingsValues[i] << std::endl;
+    }
+
+    weeklySpendingsFile.close();
 }

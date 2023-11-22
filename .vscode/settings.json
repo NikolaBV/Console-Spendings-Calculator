@@ -49,6 +49,9 @@
     "bitset": "cpp",
     "ctime": "cpp",
     "regex": "cpp",
-    "sstream": "cpp"
+    "sstream": "cpp",
+    "codecvt": "cpp",
+    "ratio": "cpp",
+    "iomanip": "cpp"
   }
 }
